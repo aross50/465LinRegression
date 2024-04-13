@@ -1,8 +1,6 @@
 //Attempt at a direct implementation; watch out though this is currently using ints.
-// TODO: Fixed point made it 44 cycles; optimizations probable
-//       --Saved another four changing from sat to wrap. Will be fine as long as we don't make ridiculously large numbers
-//		 --Can try using different sizes for inputs and outputs for saving some space/Make room for division alternative
-// TODO: Set up Git repositories for all this
+// TODO: Currently running at 40 cycles
+//		 --Can try using different sizes for inputs and outputs for saving some space/Make room for division alternative? Probably more important for space than runtime
 // TODO: Find a way to Approximate division for S (it is highest latency by far). Time for good ol friend approx. comp?
 
 #include <ap_fixed.h>
