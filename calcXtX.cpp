@@ -9,7 +9,8 @@
 typedef ap_fixed<32, 16, AP_TRN, AP_WRAP> fix;
 
 void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
-#pragma HLS INTERFACE ap_ctrl_none port=return
+//#pragma HLS INTERFACE ap_ctrl_none port=return
+#pragma HLS interface s_axilite port=return
 #pragma HLS INTERFACE s_axilite port=x
 #pragma HLS INTERFACE s_axilite port=y
 #pragma HLS INTERFACE s_axilite port=theta0
@@ -52,18 +53,30 @@ void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
 	b[0] += b[4];
 
 
-	// should check if putting in one line is faster for whatever reason
 	fix nb = n    * b[0];
 	fix a2 = a[0] * a[0];
-	fix s  = 1/(nb-a2);
+
+	//Seems straight division not working correctly; Always returns S as zero
+	//Hopefully your implementation will circumvent this?
+	//For now will try separating out
+	fix nb_a2 = nb-a2;
+	fix s  = 1/nb_a2;
+
 
 
 	fix c =  b[0] * s;
 	fix d = -a[0] * s;
 	fix e =  n    * s;
 
-	fix th0[8];
-	fix th1[8];
+	//Outputs not responding to input, testing with less work done
+		theta0 = s;
+		theta1 = nb;
+
+
+
+	//Initializing to other than zero for testing purposes
+	fix th0[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+	fix th1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	for(int i = 0; i < 8; i++){
 		#pragma HLS UNROLL
 		th0[i] += (c + (d*x[i]))*y[i];
@@ -78,7 +91,7 @@ void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
 	th0[4] += th0[6];
 	th0[0] += th0[2];
 
-	theta0 = th0[0] + th0[4];
+	//theta0 = th0[0] + th0[4];
 
 
 	//Theta1
@@ -90,7 +103,7 @@ void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
 	th1[4] += th1[6];
 	th1[0] += th1[2];
 
-	theta1 = th1[0] + th1[4];
+	//theta1 = th1[0] + th1[4];
 
 
 }
