@@ -56,12 +56,10 @@ void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
 	fix nb = n    * b[0];
 	fix a2 = a[0] * a[0];
 
-	//Seems straight division not working correctly; Always returns S as zero
-	//Hopefully your implementation will circumvent this?
-	//For now will try separating out
-	fix nb_a2 = nb-a2;
-	fix s  = 1/nb_a2;
-
+	//For the sake of ensuring other components work fully (theta calcs/jupyter integration/etc) will use hardcoded D^-1
+	//This way we can ensure everything else works and then we can use whatever method you find to calculate approx.
+	fix D = nb-a2;
+	fix s  = 0.003213;
 
 
 	fix c =  b[0] * s;
@@ -70,7 +68,7 @@ void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
 
 	//Outputs not responding to input, testing with less work done
 		theta0 = s;
-		theta1 = nb;
+		theta1 = c;
 
 
 
