@@ -8,13 +8,20 @@
 //Play around with different rounding/overflow values, see if that speeds some things up (such as the division?)
 typedef ap_fixed<32, 16, AP_TRN, AP_WRAP> fix;
 
-void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
+void calcXTX(fix x[8], fix y[8], fix& pred1, fix& pred2, fix& pred3, fix& pred4, fix& pred5, fix& pred6, fix& pred7, fix& pred8){
 //#pragma HLS INTERFACE ap_ctrl_none port=return
 #pragma HLS interface s_axilite port=return
 #pragma HLS INTERFACE s_axilite port=x
 #pragma HLS INTERFACE s_axilite port=y
-#pragma HLS INTERFACE s_axilite port=theta0
-#pragma HLS INTERFACE s_axilite port=theta1
+#pragma HLS INTERFACE s_axilite port=pred1
+#pragma HLS INTERFACE s_axilite port=pred2
+#pragma HLS INTERFACE s_axilite port=pred3
+#pragma HLS INTERFACE s_axilite port=pred4
+#pragma HLS INTERFACE s_axilite port=pred5
+#pragma HLS INTERFACE s_axilite port=pred6
+#pragma HLS INTERFACE s_axilite port=pred7
+#pragma HLS INTERFACE s_axilite port=pred8
+//#pragma HLS INTERFACE s_axilite port=theta1
 #pragma HLS ARRAY_PARTITION variable=x
 #pragma HLS ARRAY_PARTITION variable=y
 
@@ -66,15 +73,10 @@ void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
 	fix d = -a[0] * s;
 	fix e =  n    * s;
 
-	//Outputs not responding to input, testing with less work done
-		theta0 = s;
-		theta1 = c;
-
-
 
 	//Initializing to other than zero for testing purposes
-	fix th0[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-	fix th1[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+	fix th0[8];
+	fix th1[8];
 	for(int i = 0; i < 8; i++){
 		#pragma HLS UNROLL
 		th0[i] += (c + (d*x[i]))*y[i];
@@ -89,7 +91,7 @@ void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
 	th0[4] += th0[6];
 	th0[0] += th0[2];
 
-	//theta0 = th0[0] + th0[4];
+	th0[0] += th0[4];
 
 
 	//Theta1
@@ -101,7 +103,18 @@ void calcXTX(fix x[8], fix y[8], fix& theta0, fix& theta1){
 	th1[4] += th1[6];
 	th1[0] += th1[2];
 
-	//theta1 = th1[0] + th1[4];
+	th1[0] += th1[4];
+
+
+	//Current aim is simply to have all predictions as outputs for easy retrieval/confirmation
+	pred1 = (th1[0] * x[0]) + th0[0];
+	pred2 = (th1[0] * x[1]) + th0[0];
+	pred3 = (th1[0] * x[2]) + th0[0];
+	pred4 = (th1[0] * x[3]) + th0[0];
+	pred5 = (th1[0] * x[4]) + th0[0];
+	pred6 = (th1[0] * x[5]) + th0[0];
+	pred7 = (th1[0] * x[6]) + th0[0];
+	pred8 = (th1[0] * x[7]) + th0[0];
 
 
 }
