@@ -66,8 +66,10 @@ void calcXTX(fix x[8], fix y[8], fix& pred1, fix& pred2, fix& pred3, fix& pred4,
 	//For the sake of ensuring other components work fully (theta calcs/jupyter integration/etc) will use hardcoded D^-1
 	//This way we can ensure everything else works and then we can use whatever method you find to calculate approx.
 	fix D = nb-a2;
-	fix s  = 0.003213;
+	//fix s  = 0.003213;
 
+	//Trying to cast one to fix to see if this resolves division problem that was previously occuring
+	fix s = (fix(1))/D;
 
 	fix c =  b[0] * s;
 	fix d = -a[0] * s;
