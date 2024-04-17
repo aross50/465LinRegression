@@ -27,7 +27,7 @@ def print_formatted_data(X, y_actual, predictions):
               f"{distances[i]:<15.5f}")
 
 def main():
-    # Load your data here
+    # Loading data
     X = np.array([-1.1, 0.1, 1.2, 2.3, 3.1, 4.1, 4.8, 5.7])
     y = np.array([-1.7, 2.4, 5.0, 7.3, 10.9, 12.5, 16.2, 19.7])
     
