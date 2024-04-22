@@ -40,7 +40,7 @@ If your board is instead set up with a direct connection to your primary compute
 ```
 %pip install extraPackages/fixedpoint-1.0.1-py3-none-any.whl
 ```
-You can now use 'lin
+You can now use `linRegDriver.ipynb` for fast linear regression!
 
 #### On other Xilinx Boards:
 To use this IP on other Xilinx boards than the PYNQ-Z2, the c++ file [`calcXtX.cpp`](https://github.com/aross50/465LinRegression/blob/main/calcXtX.cpp) can be used in Vitis HLS to syntehesize the module for your target board, which can then be used in Vivado to create a bitstream compatable with that board.
