@@ -5,6 +5,7 @@
 
 #include <ap_fixed.h>
 
+
 //Play around with different rounding/overflow values, see if that speeds some things up (such as the division?)
 typedef ap_fixed<32, 16, AP_TRN, AP_WRAP> fix;
 
@@ -63,13 +64,38 @@ void calcXTX(fix x[8], fix y[8], fix& pred1, fix& pred2, fix& pred3, fix& pred4,
 	fix nb = n    * b[0];
 	fix a2 = a[0] * a[0];
 
-	//For the sake of ensuring other components work fully (theta calcs/jupyter integration/etc) will use hardcoded D^-1
-	//This way we can ensure everything else works and then we can use whatever method you find to calculate approx.
 	fix D = nb-a2;
-	//fix s  = 0.003213;
+
 
 	//Trying to cast one to fix to see if this resolves division problem that was previously occuring
-	fix s = (fix(1))/D;
+	//fix s = (fix(1))/D;
+
+
+	fix s = 1;
+	int shift_count = 0;
+	const int total_width = 32;
+	const int int_width = 16;
+
+	while (s <= D) {
+		s <<= 1;
+		shift_count++;
+	}
+
+	// Now, calculate the number of fractional bits
+	int frac_width = total_width - int_width;
+
+
+	fix initial_guess = 0;
+	unsigned int bitmask = 1 << (frac_width - shift_count);
+
+	initial_guess = reinterpret_cast<fix&>(bitmask);
+
+	s = initial_guess;
+
+	s = s * (fix(2) - D * s);
+	s = s * (fix(2) - D * s);
+	s = s * (fix(2) - D * s);
+
 
 	fix c =  b[0] * s;
 	fix d = -a[0] * s;
